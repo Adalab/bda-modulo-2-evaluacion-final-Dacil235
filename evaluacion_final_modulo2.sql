@@ -64,3 +64,43 @@ SELECT first_name AS Nombre, last_name AS Apellido
 SELECT title AS TitulosPeliculas
 	FROM film
     WHERE rating NOT IN ("R", "PG-13");
+    
+/* 9.Encuentra la cantidad total de películas en cada clasificación de la tabla film y muestra la clasificación junto con el recuento.
+   En esta consulta utilizamos un COUNT y un GROUP BY para contar todas la peliculas y agruparlas por la clasificación.*/
+   
+SELECT rating AS Categorias, COUNT(film_id) AS TotalPelículas
+	FROM film
+    GROUP BY rating;
+    
+/* 10.Encuentra la cantidad total de películas alquiladas por cada cliente y muestra el ID del cliente, su nombre y apellido 
+   junto con la cantidad de películas alquiladas. 
+   En este ejercicio usamos la misma lógica que en ejercicio 9 pero los datos están en diferentes tablas entonces utilizamos un JOIN.*/
+   
+SELECT c.customer_id AS id_Cliente, c.first_name AS NombreCliente, c.last_name AS ApellidosCliente, COUNT(r.rental_id) AS TotalPelicilasALquiladas
+	FROM customer AS c
+    INNER JOIN rental AS r 
+		ON c.customer_id = r.customer_id -- He decidido utilizar un INNER ya que no me especifica si han alquilado alguna vez o no.
+    GROUP BY c.customer_id, c.first_name, c.last_name;
+    
+/* 11.Encuentra la cantidad total de películas alquiladas por categoría y muestra el nombre de la categoría junto con el recuento de alquileres.
+    Esta consulta sigue la misma lógica que el ejercicio anteriror pero uniendo 5 tablas*/
+    
+SELECT name AS Categoria, COUNT(rental_id) AS TotalRecuento
+	FROM category AS ca
+    INNER JOIN film_category AS fc
+		ON ca.category_id = fc.category_id
+    INNER JOIN film AS f
+		ON fc.film_id = f.film_id
+    INNER JOIN inventory AS i
+		ON f.film_id = i.film_id
+    INNER JOIN rental AS r
+		ON i.inventory_id = r.inventory_id
+	GROUP BY name;
+    
+/* 12.Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la 
+   clasificación junto con el promedio de duración.
+   En esta consulta usamos la función de agregacion AVG para calcular el promedio de duración y GROUP BY para que lo calcule por cada categoria*/
+   
+SELECT rating AS Categoria, ROUND(AVG(length), 2) AS PromedioDuracionPelicula -- redondedo para que solo salgan dos decimales y sea mas limpio.
+	FROM film
+    GROUP BY rating;

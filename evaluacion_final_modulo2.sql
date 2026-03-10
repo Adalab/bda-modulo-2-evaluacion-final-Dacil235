@@ -104,3 +104,66 @@ SELECT name AS Categoria, COUNT(rental_id) AS TotalRecuento
 SELECT rating AS Categoria, ROUND(AVG(length), 2) AS PromedioDuracionPelicula -- redondedo para que solo salgan dos decimales y sea mas limpio.
 	FROM film
     GROUP BY rating;
+    
+/* 13.Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
+   En esta consulta utilizamos la misma lógica que en el ejercicio 2 pero uniendo tablas porque los datos están en diferentes tablas.*/
+   
+SELECT a.first_name AS Nombre, a.last_name AS Apellidos 
+	FROM actor AS a -- Uso alias para especificar cada tabla.
+    INNER JOIN film_actor AS fa
+		ON a.actor_id = fa.actor_id
+    INNER JOIN film AS f
+		ON fa.film_id = f.film_id
+    WHERE title = "Indian Love";
+    
+/* 14.Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.
+    En este ejercicio usamos la misma lógica que en el ejercicio 3 pero como son dos datos incluimos OR.*/
+    
+SELECT title AS TitulosPeliculas
+	FROM film
+    WHERE description LIKE "%dog%" OR description LIKE "%cat%";
+    
+/* 15.Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor.
+   En este ejercicio usamos un LEFT JOIN porque queremos saber si un dato es nulo y asi comprobar si el actor o la actriz
+   no aparecen en la película.*/
+   
+SELECT a.actor_id AS id_Actor
+	FROM actor AS a
+    LEFT JOIN film_actor AS fa
+		ON a.actor_id = fa.actor_id
+    WHERE fa.film_id IS NULL;
+    
+/* 16.Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
+   En este ejercicio usamos la misma lógica que en el ejercicio 7.*/
+   
+SELECT title AS TitulosPeliculas
+	FROM film
+    WHERE release_year BETWEEN 2005 AND 2010;
+    
+/* 17.Encuentra el título de todas las películas que son de la misma categoría que "Family".
+   Ejercicio que usa la misma lógica que el ejercicio 2, pero uniendo tablas.*/
+   
+SELECT title AS TitulosPeliculas
+	FROM film AS f
+    INNER JOIN film_category AS fc -- Uso INNER para evitar valores nulos, ya que en este ejercicio yo lo interpreto asi.
+		ON f.film_id = fc.film_id
+    INNER JOIN category AS ca
+		ON fc.category_id = ca.category_id
+    WHERE ca.name = "Family";
+    
+/* 18.Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
+   Esta consulta sigue la lógica de varios ejercicios anteriores pero con la diferencia del HAVING.*/
+
+SELECT a.first_name AS Nombre, a.last_name AS Apellido, COUNT(fa.film_id) AS TotalPeliculas
+	FROM actor AS a
+    INNER JOIN film_actor AS fa 
+		ON a.actor_id = fa.actor_id
+	GROUP BY a.actor_id, first_name, a.last_name
+    HAVING COUNT(fa.film_id) > 10; -- Despues de agrupar los datos los filtramos para que cumplan la condición > 10.
+    
+/* 19. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.
+   Misma lógica que en el ejercicio 2 pero añadiendole un AND para cumplir las dos condicones*/
+
+SELECT title AS TitulosPeliculas
+	FROM film
+    WHERE rating = "R" AND length > 120;

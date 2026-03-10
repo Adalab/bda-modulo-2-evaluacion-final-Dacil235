@@ -33,3 +33,6 @@ SELECT ca.name AS Categoria, AVG(length) AS PromedioDuracionPelicula
 		ON fc.film_id = f.film_id
     GROUP BY ca.name
     HAVING AVG(length) > 120;
+
+### Resultados obtenidos:
+![Promedio de duración por categoría](imagen_ejemplo/ejemplo.png)

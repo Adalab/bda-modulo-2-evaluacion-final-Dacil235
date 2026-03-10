@@ -210,3 +210,32 @@ SELECT DISTINCT title AS TitulosPeliculas -- utilizo DISTINCT para que no se rep
 																						recomendaba la IA ya que lo que estaba intentando hacer podia 
                                                                                         darme datos equivocados, es para calcular la diferencia de 
                                                                                         tiempo entre dos fechas.*/
+                                                                                        
+/* 23.Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
+   "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
+   categoría "Horror" y luego exclúyelos de la lista de actores.
+   En este ejercicio usamos una subconsulta correlativa*/
+   
+SELECT a.first_name AS Nombre, a.last_name AS Apellidos
+	FROM actor AS a
+    WHERE NOT EXISTS ( SELECT * -- NOT EXISTS filtro inverso para que me devuelva los actores o actrices que cumplan la condición de la subconsulta.
+							FROM film_actor AS fa2
+								INNER JOIN film AS f2
+									ON fa2.film_id = f2.film_id
+								INNER JOIN film_category AS fc2 -- identificar la tabla en la subconsulta, al comparar los datos es necesario.
+									ON f2.film_id = fc2.film_id
+								INNER JOIN category AS ca2
+									ON fc2.category_id = ca2.category_id
+								WHERE ca2.name = "Horror" AND fa2.actor_id = a.actor_id);/*primero que cumpla la condición de categoria y segundo que itere
+                                                                                          por los datos como un bucle.
+                                                                                          
+/* 24.Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la tabla film.
+Este ejercicio utiliza la misma lógica que el ejercicio 19 pero uniendo tablas con JOIN*/
+
+SELECT f.title AS TitulosPeliculas
+	FROM film as f
+    INNER JOIN film_category AS fc
+		ON f.film_id = fc.film_id
+    INNER JOIN category AS ca
+		ON fc.category_id = ca.category_id
+	WHERE ca.name = "Comedy" AND f.length > 180;

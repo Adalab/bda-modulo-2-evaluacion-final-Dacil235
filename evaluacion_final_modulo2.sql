@@ -167,3 +167,46 @@ SELECT a.first_name AS Nombre, a.last_name AS Apellido, COUNT(fa.film_id) AS Tot
 SELECT title AS TitulosPeliculas
 	FROM film
     WHERE rating = "R" AND length > 120;
+    
+/* 20.Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y
+   muestra el nombre de la categoría junto con el promedio de duración.
+   En es ejercicio usamos la misma lógica que en el ejercicio 18.*/
+
+SELECT ca.name AS Categoria, AVG(length) AS PromedioDuracionPelicula
+	FROM category AS ca
+    INNER JOIN film_category AS fc
+		ON ca.category_id = fc.category_id
+    INNER JOIN film AS f
+		ON fc.film_id = f.film_id
+    GROUP BY ca.name -- agrupados por el nombre de la categoria
+    HAVING AVG(length) > 120; -- condicion sobre la función agregada, resultado promedio duracion sobre cada categoria.
+    
+/* 21.Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto
+   con la cantidad de películas en las que han actuado.
+   Misma lógica que el ejercicio anterior*/
+   
+SELECT a.first_name AS Nombre, COUNT(fa.film_id) AS TotalPeliculas
+	FROM actor AS a
+    INNER JOIN film_actor AS fa
+		ON a.actor_id = fa.actor_id
+    INNER JOIN film AS f
+		ON fa.film_id = f.film_id
+	GROUP BY a.actor_id -- lo agrupe por id por si habian actores o actrices con el mismo nombre.
+    HAVING COUNT(fa.film_id) >= 5;
+    
+/* 22.Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una
+   subconsulta para encontrar los rental_ids con una duración superior a 5 días y luego selecciona las
+   películas correspondientes.
+   En este ejercicio utilizamos una subconsulta, en la que buscamos los alquileres superiore a 5 días y en la consulta principal buscamos los
+   títulos de las péliculas.*/
+   
+SELECT DISTINCT title AS TitulosPeliculas -- utilizo DISTINCT para que no se repitan las películas.
+	FROM film
+    WHERE film_id IN ( SELECT film_id
+							  FROM inventory AS i
+							  INNER JOIN rental AS r
+								ON i.inventory_id = r.inventory_id
+							   WHERE DATEDIFF(r.return_date , r.rental_date) > 5); /* Utilizo DATEDIFF que no lo hemos dado en clase pero me lo 
+																						recomendaba la IA ya que lo que estaba intentando hacer podia 
+                                                                                        darme datos equivocados, es para calcular la diferencia de 
+                                                                                        tiempo entre dos fechas.*/

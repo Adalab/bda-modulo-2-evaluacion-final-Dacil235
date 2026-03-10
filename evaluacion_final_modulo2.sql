@@ -41,11 +41,15 @@ SELECT first_name AS Nombre, last_name AS Apellido
 	FROM actor;
     
 /* 6.Encuentra el nombre y apellido de los actores que tengan "Gibson" en su apellido.
-   En esta consulta utilizamos el operador LIKE porque permite más opciones al buscar.*/
+   En esta consulta voy a poner dos soluciones.*/
+   
+SELECT first_name AS Nombre, last_name AS Apellidos
+	FROM actor
+    WHERE last_name = "Gibson"; -- que sea igual a Gibson
    
 SELECT first_name AS Nombre, last_name AS Apellido
 	FROM actor
-    WHERE last_name LIKE "Gibson";
+    WHERE last_name LIKE "Gibson"; -- que contenga Gibson
     
 /* 7.Encuentra los nombres de los actores que tengan un actor_id entre 10 y 20.
    En este ejercicio usamos la cláusula BETWEEN ya que nos dan un rango de busqueda.*/
